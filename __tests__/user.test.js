@@ -58,4 +58,30 @@ describe('auth routes', () => {
         });
       });
   });
+
+  it('verifies if user is logged in via GET', async() => {
+    const user = await User.create({
+      email: 'test@gmail.com',
+      password: 'testpw'
+    });
+
+    const agent = request.agent(app);
+
+    return agent
+      .post(`/api/v1/auth/login`)
+      .send({
+        email: 'test@gmail.com',
+        password: 'testpw'
+      })
+      .then(() => {
+        return agent
+          .get(`/api/v1/auth/verify`);
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: user.id,
+          email: user.email
+        });
+      });
+  });
 });
