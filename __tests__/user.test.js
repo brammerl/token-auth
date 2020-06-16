@@ -38,4 +38,24 @@ describe('auth routes', () => {
         });
       });
   });
+
+  it('logs in an user via POST', async() => {
+    const user = await User.create({
+      email: 'test@gmail.com',
+      password: 'testpw'
+    });
+
+    return request(app)
+      .post(`/api/v1/auth/login`)
+      .send({
+        email: 'test@gmail.com',
+        password: 'testpw'
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: user.id,
+          email: user.email
+        });
+      });
+  });
 });
